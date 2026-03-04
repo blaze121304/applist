@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  applist-backend:
+    build: .
+    image: applist-backend:latest
+    container_name: applist-backend
+    ports:
+      - "9097:9097"
+    volumes:
+      # 호스트(홈 서버)의 json 파일을 컨테이너 내부의 json 파일과 연결하여 데이터 유지
+      - ./infra-data.json:/app/infra-data.json
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - TZ=Asia/Seoul # 한국 시간대 설정 (로그 시간 오류 방지)
+    restart: unless-stopped
