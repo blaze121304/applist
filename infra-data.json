@@ -1,0 +1,41 @@
+{
+  "infraTierGroups": [
+    {
+      "tier": "web/app",
+      "items": [
+        { "host": "media", "domain": "rusty.it.kr", "port(f/w)": "9096", "ssl": "Y", "application": "Jellyfin" },
+        { "host": "applist", "domain": "rusty.it.kr", "port(f/w)": "9097", "ssl": "Y", "application": "applist" },
+        { "host": "cafe24", "domain": "rusty.it.kr", "port(f/w)": "10002", "ssl": "N", "application": "cafe24 OAuth url[front]" },
+        { "host": "zillion", "domain": "rusty.it.kr", "port(f/w)": "10003", "ssl": "N", "application": "Zillion [front]" },
+        { "host": "alarm", "domain": "rusty.it.kr", "port(f/w)": "10005", "ssl": "N", "application": "Alarm noty[front]" }
+      ]
+    },
+    {
+      "tier": "back/opt",
+      "items": [
+        { "host": "zillion", "domain": "rustyapi.dev", "port(f/w)": "10004", "ssl": "N", "application": "Zillion [backend]" },
+        { "host": "alarm", "domain": "rustyapi.dev", "port(f/w)": "10006", "ssl": "N", "application": "Alarm noty[backend]" }
+      ]
+    },
+    {
+      "tier": "ai/analysis",
+      "items": [
+        { "host": "", "domain": "rusty.ai.kr", "port(f/w)": "", "ssl": "", "application": "" }
+      ]
+    },
+    {
+      "tier": "local",
+      "items": [
+        { "host": "", "domain": "localhost", "port(f/w)": "9443", "ssl": "Y", "application": "portainer" },
+        { "host": "", "domain": "localhost", "port(f/w)": "61028", "ssl": "Y", "application": "glances" },
+        { "host": "", "domain": "localhost", "port(f/w)": "8088", "ssl": "Y", "application": "omv workbench" },
+        { "host": "", "domain": "localhost", "port(f/w)": "81", "ssl": "Y", "application": "nginx" },
+        { "host": "", "domain": "localhost", "port(f/w)": "6881", "ssl": "Y", "application": "qbittorrent" },
+        { "host": "", "domain": "localhost", "port(f/w)": "3306", "ssl": "Y", "application": "MySQL 8.4" }
+      ]
+    }
+  ],
+  "todos": [
+    { "id": "1", "content": "새로운 JSON 구조 테스트", "completed": false }
+  ]
+}

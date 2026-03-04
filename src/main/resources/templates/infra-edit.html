@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>인프라 정보 관리</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4;}
+        .tier-card { background: white; border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+        .tier-header { font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .tier-header input { font-size: 16px; font-weight: bold; padding: 5px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 5px; text-align: center;}
+        th { background-color: #eee; font-size: 14px;}
+        input[type="text"] { width: 90%; padding: 4px; }
+        .btn-save { background: #28a745; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<h2>🛠️ 계층형 인프라 정보 관리</h2>
+
+<form action="/infra/edit" method="post" th:object="${appData}">
+    <div id="tierContainer">
+        <div class="tier-card" th:each="group, gStat : *{infraTierGroups}">
+            <div class="tier-header">
+                Tier 명: <input type="text" th:field="*{infraTierGroups[__${gStat.index}__].tier}" placeholder="예: Web, DB">
+                <button type="button" onclick="this.closest('.tier-card').remove()">이 Tier 삭제</button>
+            </div>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>host/port</th>
+                    <th>domain</th>
+                    <th>Port (F/W)</th>
+                    <th>SSL</th>
+                    <th>Application</th>
+                    <th>삭제</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item, iStat : ${group.items}">
+                    <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].host}"></td>
+                    <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].domain}"></td>
+                    <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].port}"></td>
+                    <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].ssl}"></td>
+                    <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].application}"></td>
+                    <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 10px; text-align: right;">
+                <button type="button" th:attr="onclick=|addItem(this, ${gStat.index})|">+ 이 Tier에 서버 추가</button>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px; border-top: 2px solid #ccc; padding-top: 20px;">
+        <button type="button" onclick="addTier()">+ 새로운 Tier 그룹 추가</button>
+        <button type="submit" class="btn-save">전체 저장</button>
+        <a href="/"><button type="button" style="padding: 10px;">취소</button></a>
+    </div>
+</form>
+
+<script>
+    // 새로운 서버 Item 추가
+    function addItem(btn, gIndex) {
+        const tbody = btn.closest('.tier-card').querySelector('tbody');
+        const iIndex = tbody.children.length; // 현재 아이템 개수를 인덱스로 사용
+        const html = `
+                <tr>
+                    <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].host"></td>
+                    <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].domain"></td>
+                    <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].port"></td>
+                    <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].ssl"></td>
+                    <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].application"></td>
+                    <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                </tr>`;
+        tbody.insertAdjacentHTML('beforeend', html);
+    }
+
+    // 새로운 Tier 그룹 추가
+    function addTier() {
+        const container = document.getElementById('tierContainer');
+        const gIndex = container.children.length; // 현재 Tier 개수를 인덱스로 사용
+        const html = `
+                <div class="tier-card">
+                    <div class="tier-header">
+                        Tier 명: <input type="text" name="infraTierGroups[${gIndex}].tier" placeholder="새 Tier">
+                        <button type="button" onclick="this.closest('.tier-card').remove()">이 Tier 삭제</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>host/port</th><th>domain</th><th>Port (F/W)</th><th>SSL</th><th>Application</th><th>삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" name="infraTierGroups[${gIndex}].items[0].host"></td>
+                                <td><input type="text" name="infraTierGroups[${gIndex}].items[0].domain"></td>
+                                <td><input type="text" name="infraTierGroups[${gIndex}].items[0].port"></td>
+                                <td><input type="text" name="infraTierGroups[${gIndex}].items[0].ssl"></td>
+                                <td><input type="text" name="infraTierGroups[${gIndex}].items[0].application"></td>
+                                <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top: 10px; text-align: right;">
+                        <button type="button" onclick="addItem(this, ${gIndex})">+ 이 Tier에 서버 추가</button>
+                    </div>
+                </div>`;
+        container.insertAdjacentHTML('beforeend', html);
+    }
+</script>
+</body>
+</html>

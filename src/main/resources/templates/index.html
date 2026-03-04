@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>rusty's Server Infrastructure</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px; background-color: #f9f9f9; }
+        .main-title { text-align: center; font-weight: bold; border: 2px solid black; padding: 5px; background: white; margin-bottom: 0; }
+
+        /* 엑셀 스타일 테이블 */
+        .infra-table { border-collapse: collapse; width: 100%; background: white; table-layout: fixed; }
+        .infra-table th, .infra-table td { border: 1px solid black; padding: 10px; text-align: center; word-break: break-all; }
+        .infra-table th { background-color: #d9d9d9; font-weight: bold; }
+        .tier-cell { font-weight: bold; background-color: #f2f2f2; width: 120px; }
+
+        .container { display: flex; flex-direction: column; gap: 30px; }
+        .todo-section { border: 1px solid #ccc; padding: 20px; background: white; border-radius: 5px; }
+        .completed { text-decoration: line-through; color: #aaa; }
+        button { cursor: pointer; padding: 5px 10px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div>
+        <div class="main-title">rusty's Server InfraStructure</div>
+        <table class="infra-table">
+            <thead>
+            <tr>
+                <th style="width: 15%;">Tier</th>
+                <th style="width: 15%;">host/port</th>
+                <th style="width: 25%;">domain</th>
+                <th style="width: 15%;">Port (F/W)</th>
+                <th style="width: 10%;">SSL</th>
+                <th style="width: 20%;">Application</th>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="group : ${tierGroups}">
+                <tr th:each="item, itemStat : ${group.items}">
+                    <td th:if="${itemStat.first}"
+                        th:rowspan="${group.items.size()}"
+                        class="tier-cell"
+                        th:text="${group.tier}"></td>
+
+                    <td th:text="${item.host}"></td>
+                    <td th:text="${item.domain}" style="text-align: left;"></td>
+                    <td th:text="${item.port}" style="font-weight: bold;"></td>
+                    <td th:text="${item.ssl}"></td>
+
+                    <td style="text-align: left; font-weight: bold;">
+                        <span th:text="${item.application}"></span>
+
+                        <a th:if="${group.tier == 'web/app' and not #strings.isEmpty(item.host) and not #strings.isEmpty(item.domain)}"
+                           th:href="'http' + (${item.ssl == 'Y' or item.ssl == 'y'} ? 's' : '') + '://' + ${item.host} + '.' + ${item.domain}"
+                           target="_blank"
+                           style="text-decoration: none; margin-left: 8px;">
+                            <button type="button" style="font-size: 11px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 3px; padding: 3px 6px;">🚀 접속</button>
+                        </a>
+                    </td>
+                </tr>
+            </th:block>
+            <tr th:if="${#lists.isEmpty(tierGroups)}">
+                <td colspan="6">데이터가 없습니다. [수정하기]를 눌러 인프라 정보를 추가하세요.</td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="margin-top: 10px;">
+            <a href="/infra/edit"><button>수정하기 (행 관리)</button></a>
+        </div>
+    </div>
+
+    <div class="todo-section">
+        <h3>📝 Memo / Todo</h3>
+        <form action="/todo/add" method="post" style="margin-bottom: 10px;">
+            <input type="text" name="content" placeholder="메모 추가..." style="width: 300px; padding: 5px;">
+            <button type="submit">등록</button>
+        </form>
+        <ul style="list-style: none; padding: 0;">
+            <li th:each="todo : ${todos}" style="margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px;">
+                <span th:text="${todo.content}" th:classappend="${todo.completed} ? 'completed' : ''"></span>
+                <form action="/todo/toggle" method="post" style="display:inline; margin-left: 10px;">
+                    <input type="hidden" name="id" th:value="${todo.id}">
+                    <button type="submit" style="font-size: 11px;">V</button>
+                </form>
+                <form action="/todo/delete" method="post" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${todo.id}">
+                    <button type="submit" style="font-size: 11px;">X</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>
