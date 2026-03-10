@@ -4,6 +4,7 @@ import com.rusty.applistbackend.domain.dto.AppData;
 import com.rusty.applistbackend.domain.dto.Todo;
 import com.rusty.applistbackend.repository.JsonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
