@@ -4,6 +4,7 @@ import com.rusty.applistbackend.domain.dto.AppData;
 import com.rusty.applistbackend.domain.dto.Todo;
 import com.rusty.applistbackend.repository.JsonRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class AppController {
 
     private final JsonRepository jsonRepository;
+
+    @Value("${info.app.version:unknown}")
+    private String version;
 
     // 1. 메인 대시보드
     @GetMapping("/")
@@ -77,5 +81,11 @@ public class AppController {
             @RequestParam String state
     ) {
         return ResponseEntity.ok("code=" + code + ", state=" + state);
+    }
+
+    @GetMapping("/api/version")
+    @ResponseBody
+    public String version() {
+        return version;
     }
 }

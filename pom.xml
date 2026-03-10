@@ -62,6 +62,13 @@
     </dependencies>
 
     <build>
+        <!--git tag 리소스 필터링-->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -90,6 +97,17 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <!--git tag 플러그인-->
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>7.0.0</version>
+                <executions>
+                    <execution>
+                        <goals><goal>revision</goal></goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
