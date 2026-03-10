@@ -1,7 +1,7 @@
 package com.rusty.applistbackend.controller;
 
-import com.rusty.applistbackend.domain.AppData;
-import com.rusty.applistbackend.domain.Todo;
+import com.rusty.applistbackend.domain.dto.AppData;
+import com.rusty.applistbackend.domain.dto.Todo;
 import com.rusty.applistbackend.repository.JsonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -67,5 +67,14 @@ public class AppController {
         jsonRepository.getData().getTodos().removeIf(todo -> todo.getId().equals(id));
         jsonRepository.save();
         return "redirect:/";
+    }
+
+    //7. cafe24
+    @GetMapping("/cafe24/oauth/callback")
+    public ResponseEntity<String> callback(
+            @RequestParam String code,
+            @RequestParam String state
+    ) {
+        return ResponseEntity.ok("code=" + code + ", state=" + state);
     }
 }

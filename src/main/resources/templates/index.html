@@ -14,9 +14,16 @@
         .tier-cell { font-weight: bold; background-color: #f2f2f2; width: 120px; }
 
         .container { display: flex; flex-direction: column; gap: 30px; }
-        .todo-section { border: 1px solid #ccc; padding: 20px; background: white; border-radius: 5px; }
+
+        /* 하단 패널 (Todo & 구성원칙) 레이아웃 */
+        .bottom-panels { display: flex; gap: 30px; }
+        .panel { flex: 1; border: 1px solid #ccc; padding: 20px; background: white; border-radius: 5px; }
+
         .completed { text-decoration: line-through; color: #aaa; }
         button { cursor: pointer; padding: 5px 10px; }
+
+        /* 구성원칙 트리 스타일 */
+        .tree-pre { background: #f4f6f8; padding: 15px; border-radius: 5px; border: 1px solid #e1e4e8; font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.5; overflow-x: auto; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -69,25 +76,46 @@
         </div>
     </div>
 
-    <div class="todo-section">
-        <h3>📝 Memo / Todo</h3>
-        <form action="/todo/add" method="post" style="margin-bottom: 10px;">
-            <input type="text" name="content" placeholder="메모 추가..." style="width: 300px; padding: 5px;">
-            <button type="submit">등록</button>
-        </form>
-        <ul style="list-style: none; padding: 0;">
-            <li th:each="todo : ${todos}" style="margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px;">
-                <span th:text="${todo.content}" th:classappend="${todo.completed} ? 'completed' : ''"></span>
-                <form action="/todo/toggle" method="post" style="display:inline; margin-left: 10px;">
-                    <input type="hidden" name="id" th:value="${todo.id}">
-                    <button type="submit" style="font-size: 11px;">V</button>
-                </form>
-                <form action="/todo/delete" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${todo.id}">
-                    <button type="submit" style="font-size: 11px;">X</button>
-                </form>
-            </li>
-        </ul>
+    <div class="bottom-panels">
+        <div class="panel">
+            <h3 style="margin-top: 0;">📝 Memo / Todo</h3>
+            <form action="/todo/add" method="post" style="margin-bottom: 10px; display: flex; gap: 5px;">
+                <input type="text" name="content" placeholder="메모 추가..." style="flex: 1; padding: 5px;">
+                <button type="submit">등록</button>
+            </form>
+            <ul style="list-style: none; padding: 0; margin: 0;">
+                <li th:each="todo : ${todos}" style="margin-bottom: 8px; border-bottom: 1px dashed #eee; padding-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
+                    <span th:text="${todo.content}" th:classappend="${todo.completed} ? 'completed' : ''" style="flex: 1;"></span>
+                    <div style="white-space: nowrap;">
+                        <form action="/todo/toggle" method="post" style="display:inline; margin-left: 10px;">
+                            <input type="hidden" name="id" th:value="${todo.id}">
+                            <button type="submit" style="font-size: 11px;">V</button>
+                        </form>
+                        <form action="/todo/delete" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${todo.id}">
+                            <button type="submit" style="font-size: 11px;">X</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel">
+            <h3 style="margin-top: 0;">📂 소스 프로젝트 구성원칙</h3>
+            <pre class="tree-pre">
+common/
+  ├── config/
+  ├── exception/
+  └── util/
+controller/
+domain/
+  ├── dto/
+  └── entity/
+repository/
+  └── dao/
+service/
+  └── (scheduler 포함)</pre>
+        </div>
     </div>
 </div>
 </body>

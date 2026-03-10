@@ -1,6 +1,6 @@
 package com.rusty.applistbackend.repository;
 
-import com.rusty.applistbackend.domain.AppData;
+import com.rusty.applistbackend.domain.dto.AppData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Repository;

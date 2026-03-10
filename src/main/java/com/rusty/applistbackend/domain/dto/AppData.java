@@ -1,4 +1,4 @@
-package com.rusty.applistbackend.domain;
+package com.rusty.applistbackend.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;
