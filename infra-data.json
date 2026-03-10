@@ -12,13 +12,13 @@
       "domain" : "rusty.it.kr",
       "ssl" : "Y",
       "application" : "applist",
-      "port(f/w)" : "9097"
+      "port(f/w)" : "10001"
     }, {
       "host" : "cafe24",
       "domain" : "rusty.it.kr",
       "ssl" : "N",
       "application" : "cafe24 OAuth url[front]",
-      "port(f/w)" : "10002"
+      "port(f/w)" : "10001"
     }, {
       "host" : "zillion",
       "domain" : "rusty.it.kr",
@@ -39,13 +39,13 @@
       "domain" : "rustyapi.dev",
       "ssl" : "N",
       "application" : "Zillion [backend]",
-      "port(f/w)" : "10004"
+      "port(f/w)" : "10002"
     }, {
       "host" : "alarm",
       "domain" : "rustyapi.dev",
       "ssl" : "N",
       "application" : "Alarm noty[backend]",
-      "port(f/w)" : "10006"
+      "port(f/w)" : "10004"
     } ]
   }, {
     "tier" : "ai/analysis",
