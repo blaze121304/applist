@@ -29,7 +29,6 @@ public class JsonRepository {
             } catch (IOException e) {
                 System.err.println("JSON 읽기 실패, 데이터를 초기화합니다: " + e.getMessage());
                 currentData = new AppData(); // 예외 발생 시 빈 상태로 덮어쓰기 (리스크 대응)
-                save();
             }
         } else {
             currentData = new AppData();
