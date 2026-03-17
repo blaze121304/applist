@@ -44,7 +44,7 @@
                     <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].port}"></td>
                     <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].ssl}"></td>
                     <td><input type="text" th:field="*{infraTierGroups[__${gStat.index}__].items[__${iStat.index}__].application}"></td>
-                    <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                    <td><button type="button" onclick="deleteRow(this)">X</button></td>
                 </tr>
                 </tbody>
             </table>
@@ -62,6 +62,26 @@
 </form>
 
 <script>
+    // row 삭제 후 남은 row들의 name 인덱스 재정렬
+    function deleteRow(btn) {
+        const tr = btn.closest('tr');
+        const tbody = tr.closest('tbody');
+        const tierCard = tr.closest('.tier-card');
+        tr.remove();
+        const input = tierCard.querySelector('input[name*="infraTierGroups["]');
+        if (!input) return;
+        const match = input.name.match(/infraTierGroups\[(\d+)\]/);
+        if (!match) return;
+        const gIndex = parseInt(match[1]);
+        Array.from(tbody.rows).forEach((row, iIndex) => {
+            row.querySelectorAll('input[type="text"]').forEach(inp => {
+                if (inp.name) {
+                    inp.name = inp.name.replace(/infraTierGroups\[\d+\]\.items\[\d+\]/, `infraTierGroups[${gIndex}].items[${iIndex}]`);
+                }
+            });
+        });
+    }
+
     // 새로운 서버 Item 추가
     function addItem(btn, gIndex) {
         const tbody = btn.closest('.tier-card').querySelector('tbody');
@@ -73,7 +93,7 @@
                     <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].port"></td>
                     <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].ssl"></td>
                     <td><input type="text" name="infraTierGroups[${gIndex}].items[${iIndex}].application"></td>
-                    <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                    <td><button type="button" onclick="deleteRow(this)">X</button></td>
                 </tr>`;
         tbody.insertAdjacentHTML('beforeend', html);
     }
@@ -101,7 +121,7 @@
                                 <td><input type="text" name="infraTierGroups[${gIndex}].items[0].port"></td>
                                 <td><input type="text" name="infraTierGroups[${gIndex}].items[0].ssl"></td>
                                 <td><input type="text" name="infraTierGroups[${gIndex}].items[0].application"></td>
-                                <td><button type="button" onclick="this.closest('tr').remove()">X</button></td>
+                                <td><button type="button" onclick="deleteRow(this)">X</button></td>
                             </tr>
                         </tbody>
                     </table>
