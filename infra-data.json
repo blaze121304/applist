@@ -31,25 +31,8 @@
         "sshKeyPath" : "",
         "sshKeyPassphrase" : "",
         "sshPassword" : "",
-        "buildScriptPath" : "./home/rusty/bin/applist.deploy.sh",
+        "buildScriptPath" : "/home/rusty/bin/applist.deploy.sh",
         "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml applist"
-      },
-      "port(f/w)" : "10001"
-    }, {
-      "id" : "a770eac0e3ed",
-      "host" : "cafe24",
-      "domain" : "rusty.it.kr",
-      "ssl" : "N",
-      "application" : "cafe24 OAuth url[front]",
-      "deployConfig" : {
-        "sshHost" : "",
-        "sshPort" : 22,
-        "sshUser" : "",
-        "sshKeyPath" : "",
-        "sshKeyPassphrase" : "",
-        "sshPassword" : "",
-        "buildScriptPath" : "./build.sh",
-        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
       },
       "port(f/w)" : "10001"
     }, {
