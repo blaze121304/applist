@@ -24,6 +24,53 @@
 
         /* 구성원칙 트리 스타일 */
         .tree-pre { background: #f4f6f8; padding: 15px; border-radius: 5px; border: 1px solid #e1e4e8; font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.5; overflow-x: auto; margin-top: 10px; }
+
+        /* 로그 모달 */
+        #logModal {
+            display: none;
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            height: 320px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', Courier, monospace;
+            z-index: 1000;
+            flex-direction: column;
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.4);
+        }
+        #logModal.visible { display: flex; }
+        .log-header {
+            background: #333;
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #555;
+            flex-shrink: 0;
+        }
+        .log-header span { color: #9cdcfe; font-weight: bold; font-size: 13px; }
+        .log-header button {
+            background: none; border: none; color: #ccc;
+            cursor: pointer; font-size: 16px; padding: 0 4px;
+        }
+        .log-header button:hover { color: #fff; }
+        #logContent {
+            flex: 1;
+            overflow-y: auto;
+            margin: 0;
+            padding: 10px 14px;
+            font-size: 13px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        /* 로그 색상 */
+        .log-info    { color: #9cdcfe; }
+        .log-success { color: #4ec9b0; }
+        .log-failed  { color: #f48771; }
+        .log-error   { color: #f44747; }
+        .log-warn    { color: #dcdcaa; }
+        .log-done    { color: #808080; }
     </style>
 </head>
 <body>
@@ -33,13 +80,14 @@
         <table class="infra-table">
             <thead>
             <tr>
-                <th style="width: 13%;">Tier</th>
-                <th style="width: 14%;">host/port</th>
-                <th style="width: 15%;">domain</th>
-                <th style="width: 11%;">Port (F/W)</th>
-                <th style="width: 7%;">SSL</th>
-                <th style="width: 30%;">Application</th>
-                <th style="width: 10%;">접속</th>
+                <th style="width: 12%;">Tier</th>
+                <th style="width: 13%;">host/port</th>
+                <th style="width: 14%;">domain</th>
+                <th style="width: 10%;">Port (F/W)</th>
+                <th style="width: 6%;">SSL</th>
+                <th style="width: 28%;">Application</th>
+                <th style="width: 9%;">접속</th>
+                <th style="width: 8%;">배포</th>
             </tr>
             </thead>
             <tbody>
@@ -64,13 +112,23 @@
                            th:href="${url}"
                            target="_blank"
                            style="text-decoration: none;">
-                            <button type="button" style="font-size: 11px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 3px; padding: 3px 6px;">🚀 접속</button>
+                            <button type="button" style="font-size: 11px; background-color: #007bff; color: white; border: none; border-radius: 3px; padding: 3px 6px;">🚀 접속</button>
                         </a>
+                    </td>
+                    <td>
+                        <button th:if="${item.deployConfig != null and not #strings.isEmpty(item.deployConfig.sshUser)}"
+                                type="button"
+                                th:attr="onclick=|startDeploy('${item.id}', '${item.application}')|"
+                                style="font-size: 11px; background-color: #28a745; color: white; border: none; border-radius: 3px; padding: 3px 6px;">
+                            ⚡ 배포
+                        </button>
+                        <span th:if="${item.deployConfig == null or #strings.isEmpty(item.deployConfig.sshUser)}"
+                              style="color:#ccc; font-size: 11px;">미설정</span>
                     </td>
                 </tr>
             </th:block>
             <tr th:if="${#lists.isEmpty(tierGroups)}">
-                <td colspan="7">데이터가 없습니다. [수정하기]를 눌러 인프라 정보를 추가하세요.</td>
+                <td colspan="8">데이터가 없습니다. [수정하기]를 눌러 인프라 정보를 추가하세요.</td>
             </tr>
             </tbody>
         </table>
@@ -121,5 +179,95 @@ service/
         </div>
     </div>
 </div>
+
+<!-- 배포 로그 모달 -->
+<div id="logModal">
+    <div class="log-header">
+        <span id="logModalTitle">배포 로그</span>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <button onclick="clearLog()" title="로그 지우기">🗑</button>
+            <button onclick="closeLogModal()" title="닫기">✕</button>
+        </div>
+    </div>
+    <pre id="logContent"></pre>
+</div>
+
+<!-- WebSocket 클라이언트 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    let stompClient = null;
+
+    function startDeploy(appId, appName) {
+        document.getElementById('logContent').innerHTML = '';
+        document.getElementById('logModalTitle').textContent = '⚡ 배포 로그: ' + appName;
+        document.getElementById('logModal').classList.add('visible');
+
+        connectAndDeploy(appId);
+    }
+
+    function connectAndDeploy(appId) {
+        if (stompClient && stompClient.connected) {
+            stompClient.disconnect();
+        }
+
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+
+        stompClient.connect({}, function () {
+            stompClient.subscribe('/topic/logs/' + appId, function (message) {
+                appendLog(message.body);
+            });
+
+            fetch('/deploy/' + appId, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function (r) {
+                if (r.status === 401 || r.status === 403) {
+                    appendLog('[ERROR] 인증이 필요합니다. 로그인 페이지로 이동합니다...');
+                    setTimeout(function () { window.location.href = '/login'; }, 1500);
+                    return null;
+                }
+                return r.text();
+            }).then(function (msg) {
+                if (msg) appendLog('>>> ' + msg);
+            }).catch(function (e) {
+                appendLog('[ERROR] 배포 요청 실패: ' + e.message);
+            });
+
+        }, function (error) {
+            appendLog('[ERROR] WebSocket 연결 실패: ' + error);
+        });
+    }
+
+    function appendLog(text) {
+        const pre = document.getElementById('logContent');
+        const span = document.createElement('span');
+
+        if (text.startsWith('[SUCCESS]')) span.className = 'log-success';
+        else if (text.startsWith('[FAILED]') || text.startsWith('[ERROR]')) span.className = 'log-error';
+        else if (text.startsWith('[WARN]')) span.className = 'log-warn';
+        else if (text.startsWith('[INFO]')) span.className = 'log-info';
+        else if (text.startsWith('[DONE]')) span.className = 'log-done';
+        else if (text.startsWith('[ERR]')) span.className = 'log-failed';
+
+        span.textContent = text + '\n';
+        pre.appendChild(span);
+        pre.scrollTop = pre.scrollHeight;
+    }
+
+    function clearLog() {
+        document.getElementById('logContent').innerHTML = '';
+    }
+
+    function closeLogModal() {
+        document.getElementById('logModal').classList.remove('visible');
+        if (stompClient) {
+            stompClient.disconnect();
+            stompClient = null;
+        }
+    }
+</script>
 </body>
 </html>

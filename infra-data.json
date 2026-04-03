@@ -2,97 +2,251 @@
   "infraTierGroups" : [ {
     "tier" : "web/app",
     "items" : [ {
+      "id" : "b6a82f905d4a",
       "host" : "media",
       "domain" : "rusty.it.kr",
       "ssl" : "Y",
       "application" : "Jellyfin",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "9096"
     }, {
+      "id" : "8892f7585d50",
       "host" : "applist",
       "domain" : "rusty.it.kr",
       "ssl" : "Y",
       "application" : "applist",
+      "deployConfig" : {
+        "sshHost" : "192.168.0.206",
+        "sshPort" : 5210,
+        "sshUser" : "rusty",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./home/rusty/bin/applist.deploy.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml applist"
+      },
       "port(f/w)" : "10001"
     }, {
+      "id" : "a770eac0e3ed",
       "host" : "cafe24",
       "domain" : "rusty.it.kr",
       "ssl" : "N",
       "application" : "cafe24 OAuth url[front]",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "10001"
     }, {
+      "id" : "ddc608691cf7",
       "host" : "zillion",
       "domain" : "rusty.it.kr",
       "ssl" : "N",
       "application" : "Zillion [front]",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "10003"
     }, {
+      "id" : "62b22621bd13",
       "host" : "alarm",
       "domain" : "rusty.it.kr",
       "ssl" : "N",
       "application" : "Alarm noty[front]",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "10005"
     } ]
   }, {
     "tier" : "back/opt",
     "items" : [ {
+      "id" : "e614cdbb2db6",
       "host" : "zillion",
       "domain" : "rustyapi.dev",
       "ssl" : "N",
       "application" : "Zillion [backend]",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "10002"
     }, {
+      "id" : "2adb326499ff",
       "host" : "alarm",
       "domain" : "rustyapi.dev",
       "ssl" : "N",
       "application" : "Alarm noty[backend]",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "10004"
     } ]
   }, {
     "tier" : "ai/analysis",
     "items" : [ {
+      "id" : "a56c2c16809c",
       "host" : "",
       "domain" : "rusty.ai.kr",
       "ssl" : "",
       "application" : "",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : ""
     } ]
   }, {
     "tier" : "local",
     "items" : [ {
+      "id" : "7f5eec22a7a8",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "portainer",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "9443"
     }, {
+      "id" : "f92c05fa5145",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "glances",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "61028"
     }, {
+      "id" : "cdd527c74388",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "omv workbench",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "8088"
     }, {
+      "id" : "ecc8be60ed62",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "nginx",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "81"
     }, {
+      "id" : "3f8b313b7bce",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "qbittorrent",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "6881"
     }, {
+      "id" : "12e85c677095",
       "host" : "",
       "domain" : "localhost",
       "ssl" : "Y",
       "application" : "MySQL 8.4",
+      "deployConfig" : {
+        "sshHost" : "",
+        "sshPort" : 22,
+        "sshUser" : "",
+        "sshKeyPath" : "",
+        "sshKeyPassphrase" : "",
+        "sshPassword" : "",
+        "buildScriptPath" : "./build.sh",
+        "dockerDeployCmd" : "docker stack deploy -c docker-compose.yml myapp"
+      },
       "port(f/w)" : "3306"
     } ]
   } ],
