@@ -27,7 +27,7 @@
       "deployConfig" : {
         "sshHost" : "192.168.0.206",
         "sshPort" : 5210,
-        "sshUser" : "rusty",
+        "sshUser" : "rusty-deploy",
         "sshKeyPath" : "",
         "sshKeyPassphrase" : "",
         "sshPassword" : "",
